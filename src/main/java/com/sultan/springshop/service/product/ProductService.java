@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sultan.springshop.exceptions.ProductNotFoundException;
+import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Category;
 import com.sultan.springshop.model.Product;
 import com.sultan.springshop.repository.CategoryRepository;
@@ -71,13 +72,13 @@ public class ProductService implements IProductService {
 
     @Override
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
     public void deleteProductById(Long id) {
         productRepository.findById(id).ifPresentOrElse(productRepository::delete, () -> {
-            throw new ProductNotFoundException("Product not found!");
+            throw new ResourceNotFoundException("Product not found!");
         });
     }
 
