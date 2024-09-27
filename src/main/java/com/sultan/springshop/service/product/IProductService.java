@@ -2,6 +2,7 @@ package com.sultan.springshop.service.product;
 
 import java.util.List;
 
+import com.sultan.springshop.dto.ProductDto;
 import com.sultan.springshop.model.Product;
 import com.sultan.springshop.request.AddProductRequest;
 import com.sultan.springshop.request.UpdateProductRequest;
@@ -29,4 +30,7 @@ public interface IProductService {
 
     Long countProductsByBrandAndName(String brand, String name);
 
+    ProductDto convertToDto(Product product);
+
+    List<ProductDto> getConvertedProducts(List<Product> products);
 }

@@ -10,7 +10,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sultan.springshop.dto.ImageDTO;
+import com.sultan.springshop.dto.ImageDto;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Image;
 import com.sultan.springshop.model.Product;
@@ -40,9 +40,9 @@ public class ImageService implements IImageService {
     }
 
     @Override
-    public List<ImageDTO> saveImages(List<MultipartFile> files, Long productId) {
+    public List<ImageDto> saveImages(List<MultipartFile> files, Long productId) {
         Product product = productService.getProductById(productId);
-        List<ImageDTO> savedImageDtos = new ArrayList<>();
+        List<ImageDto> savedImageDtos = new ArrayList<>();
         for (MultipartFile file : files) {
             try {
                 Image image = new Image();
@@ -59,9 +59,9 @@ public class ImageService implements IImageService {
 
                 imageRepository.save(savedImage);
 
-                ImageDTO imageDTO = new ImageDTO();
-                imageDTO.setImageId(savedImage.getId());
-                imageDTO.setImageName(savedImage.getFileName());
+                ImageDto imageDTO = new ImageDto();
+                imageDTO.setId(savedImage.getId());
+                imageDTO.setFileName(savedImage.getFileName());
                 imageDTO.setDownloadUrl(savedImage.getDownloadUrl());
                 savedImageDtos.add(imageDTO);
 

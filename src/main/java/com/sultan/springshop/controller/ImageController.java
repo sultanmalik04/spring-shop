@@ -21,12 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sultan.springshop.dto.ImageDTO;
+import com.sultan.springshop.dto.ImageDto;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Image;
 import com.sultan.springshop.response.ApiResponse;
 import com.sultan.springshop.service.image.IImageService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class ImageController {
     public ResponseEntity<ApiResponse> saveImages(@RequestParam List<MultipartFile> files,
             @RequestParam Long productId) {
         try {
-            List<ImageDTO> imageDTOs = imageService.saveImages(files, productId);
+            List<ImageDto> imageDTOs = imageService.saveImages(files, productId);
             return ResponseEntity.ok(new ApiResponse("Upload success!", imageDTOs));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -50,15 +51,24 @@ public class ImageController {
         }
     }
 
+    @Transactional
     @GetMapping("/image/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) throws SQLException {
         Image image = imageService.getImageById(imageId);
-
         ByteArrayResource resource = new ByteArrayResource(
                 image.getImage().getBytes(1, (int) image.getImage().length()));
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
                 .body(resource);
+        // Image image = imageService.getImageById(imageId);
+
+        // ByteArrayResource resource = new ByteArrayResource(
+        // image.getImage().getBytes(1, (int) image.getImage().length()));
+        // return
+        // ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
+        // .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+        // image.getFileName() + "\"")
+        // .body(resource);
     }
 
     @PutMapping("/image/{imageId}/update")
