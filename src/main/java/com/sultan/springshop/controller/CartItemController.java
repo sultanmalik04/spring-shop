@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.response.ApiResponse;
 import com.sultan.springshop.service.cart.ICartItemService;
+import com.sultan.springshop.service.cart.ICartService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,11 +23,15 @@ import lombok.RequiredArgsConstructor;
 public class CartItemController {
 
     private final ICartItemService cartItemService;
+    private final ICartService cartService;
 
     @PostMapping("/item/add")
     public ResponseEntity<ApiResponse> addItemToCart(@RequestParam Long cartId, @RequestParam Long productId,
             @RequestParam Integer quantity) {
         try {
+            if (cartId == null) {
+                cartId = cartService.initializeNewCart();
+            }
             cartItemService.addItemToCart(cartId, productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Add Item success", null));
         } catch (ResourceNotFoundException e) {
