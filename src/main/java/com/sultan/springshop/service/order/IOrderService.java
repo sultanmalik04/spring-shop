@@ -1,5 +1,7 @@
 package com.sultan.springshop.service.order;
 
+import java.util.List;
+
 import com.sultan.springshop.model.Order;
 
 public interface IOrderService {
@@ -8,4 +10,5 @@ public interface IOrderService {
 
     Order getOrder(Long orderId);
 
+    List<Order> getUserOrders(Long userId);
 }
