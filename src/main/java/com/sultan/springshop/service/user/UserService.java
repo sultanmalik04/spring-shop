@@ -1,7 +1,9 @@
 package com.sultan.springshop.service.user;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.sultan.springshop.dto.UserDto;
 import com.sultan.springshop.exceptions.AlreadyExistsException;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.User;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) {
@@ -50,6 +53,11 @@ public class UserService implements IUserService {
         userRepository.findById(userId).ifPresentOrElse(userRepository::delete, () -> {
             throw new ResourceNotFoundException("User not found");
         });
+    }
+
+    @Override
+    public UserDto convertUsertoDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 
 }
