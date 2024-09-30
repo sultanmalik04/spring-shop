@@ -3,6 +3,7 @@ package com.sultan.springshop.service.cart;
 import java.math.BigDecimal;
 
 import com.sultan.springshop.model.Cart;
+import com.sultan.springshop.model.User;
 
 public interface ICartService {
 
@@ -12,7 +13,7 @@ public interface ICartService {
 
     BigDecimal getTotalPrice(Long id);
 
-    public Long initializeNewCart();
+    public Cart initializeNewCart(User user);
 
     Cart getCartByUserId(Long userId);
 }

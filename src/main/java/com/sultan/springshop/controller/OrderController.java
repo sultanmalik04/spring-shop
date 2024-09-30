@@ -23,13 +23,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/orders")
 public class OrderController {
-    private IOrderService orderService;
+    private final IOrderService orderService;
 
     @PostMapping("/order")
     public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId) {
         try {
             Order order = orderService.placeOrder(userId);
-            return ResponseEntity.ok(new ApiResponse("Item Order success", order));
+            OrderDto orderDto = orderService.converToDto(order);
+            return ResponseEntity.ok(new ApiResponse("Item Order success", orderDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
