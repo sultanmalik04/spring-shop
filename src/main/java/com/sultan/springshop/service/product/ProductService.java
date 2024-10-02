@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.sultan.springshop.dto.ImageDto;
 import com.sultan.springshop.dto.ProductDto;
+import com.sultan.springshop.exceptions.AlreadyExistsException;
 import com.sultan.springshop.exceptions.ProductNotFoundException;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Category;
@@ -36,6 +37,11 @@ public class ProductService implements IProductService {
         // if yes, set it as the new product category
         // if no, then save it as a new category
         // then set as the new product category
+
+        if (productExists(request.getName(), request.getBrand())) {
+            throw new AlreadyExistsException(request.getBrand() + " " + request.getName()
+                    + " already exists, you may update this product instead");
+        }
 
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
@@ -75,6 +81,10 @@ public class ProductService implements IProductService {
                 request.getInventory(),
                 request.getDescription(),
                 category);
+    }
+
+    private boolean productExists(String name, String brand) {
+        return productRepository.existsByNameandBrand(name, brand);
     }
 
     @Override

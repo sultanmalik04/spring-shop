@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sultan.springshop.dto.ProductDto;
+import com.sultan.springshop.exceptions.AlreadyExistsException;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Product;
 import com.sultan.springshop.request.AddProductRequest;
@@ -56,6 +57,8 @@ public class ProductController {
             Product newProduct = productService.addProduct(product);
             ProductDto productDto = productService.convertToDto(newProduct);
             return ResponseEntity.ok(new ApiResponse("Add product success", productDto));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
