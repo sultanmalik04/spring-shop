@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import com.sultan.springshop.security.user.ShopUserDetails;
 
@@ -21,6 +22,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import io.jsonwebtoken.security.SignatureException;
 
+@Component
 public class JwtUtils {
     @Value("${auth.token.jwtSecret}")
     private String jwtSecret;
