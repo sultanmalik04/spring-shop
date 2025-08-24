@@ -33,10 +33,10 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> getAllCategories() {
         try {
             List<Category> categories = categoryService.getAllCategory();
-            return ResponseEntity.ok(new ApiResponse("Found!", categories));
+            return ResponseEntity.ok(new ApiResponse("Found!", categories, true));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse("Error: ", HttpStatus.INTERNAL_SERVER_ERROR));
+                    .body(new ApiResponse("Error: ", HttpStatus.INTERNAL_SERVER_ERROR, false));
         }
     }
 
@@ -44,10 +44,10 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> addCategory(@RequestBody Category category) {
         try {
             Category newCategory = categoryService.addCategory(category);
-            return ResponseEntity.ok(new ApiResponse("Success", newCategory));
+            return ResponseEntity.ok(new ApiResponse("Success", newCategory, true));
 
         } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -55,9 +55,9 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long id) {
         try {
             Category theCategory = categoryService.getcategoryById(id);
-            return ResponseEntity.ok(new ApiResponse("Found", theCategory));
+            return ResponseEntity.ok(new ApiResponse("Found", theCategory, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -65,9 +65,9 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
         try {
             Category theCategory = categoryService.getCategoryByName(name);
-            return ResponseEntity.ok(new ApiResponse("Found", theCategory));
+            return ResponseEntity.ok(new ApiResponse("Found", theCategory, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -75,9 +75,9 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
         try {
             categoryService.deleteCategoryById(id);
-            return ResponseEntity.ok(new ApiResponse("deleted", null));
+            return ResponseEntity.ok(new ApiResponse("deleted", null, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -85,9 +85,9 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody Category category) {
         try {
             Category updatedCategory = categoryService.updateCategory(category, id);
-            return ResponseEntity.ok(new ApiResponse("Update success", updatedCategory));
+            return ResponseEntity.ok(new ApiResponse("Update success", updatedCategory, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("update failed", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("update failed", null, false));
         }
     }
 

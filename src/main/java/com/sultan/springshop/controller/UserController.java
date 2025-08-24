@@ -34,9 +34,9 @@ public class UserController {
         try {
             User user = userService.getUserById(userId);
             UserDto userDto = userService.convertUsertoDto(user);
-            return ResponseEntity.ok(new ApiResponse("Success", userDto));
+            return ResponseEntity.ok(new ApiResponse("Success", userDto, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -45,9 +45,9 @@ public class UserController {
         try {
             User user = userService.createUser(request);
             UserDto userDto = userService.convertUsertoDto(user);
-            return ResponseEntity.ok(new ApiResponse("Create user success", userDto));
+            return ResponseEntity.ok(new ApiResponse("Create user success", userDto, true));
         } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -56,9 +56,9 @@ public class UserController {
         try {
             User user = userService.updateUser(request, userId);
             UserDto userDto = userService.convertUsertoDto(user);
-            return ResponseEntity.ok(new ApiResponse("update user success", userDto));
+            return ResponseEntity.ok(new ApiResponse("update user success", userDto, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -66,9 +66,9 @@ public class UserController {
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try {
             userService.deleteUser(userId);
-            return ResponseEntity.ok(new ApiResponse("Delete user success", null));
+            return ResponseEntity.ok(new ApiResponse("Delete user success", null, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 

@@ -26,7 +26,7 @@ import io.jsonwebtoken.security.SignatureException;
 public class JwtUtils {
     @Value("${auth.token.jwtSecret}")
     private String jwtSecret;
-    @Value("${auth.token.expirationInMils}")
+    @Value("${auth.token.expirationInMilliseconds}")
     private int expirationTime;
 
     @SuppressWarnings("deprecation")

@@ -37,10 +37,10 @@ public class AuthController {
             String jwt = jwtUtils.generateTokenForUser(authentication);
             ShopUserDetails userDetails = (ShopUserDetails) authentication.getPrincipal();
             JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
-            return ResponseEntity.ok(new ApiResponse("Login successful", jwtResponse));
+            return ResponseEntity.ok(new ApiResponse("Login successful", jwtResponse, true));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse("Invalid email or password", e.getMessage()));
+                    .body(new ApiResponse("Invalid email or password", e.getMessage(), false));
         }
     }
 

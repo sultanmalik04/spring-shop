@@ -13,6 +13,7 @@ import com.sultan.springshop.model.User;
 import com.sultan.springshop.repository.UserRepository;
 import com.sultan.springshop.request.CreateUserRequest;
 import com.sultan.springshop.request.UserUpadteRquest;
+import com.sultan.springshop.service.cart.ICartService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +26,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ICartService cartService;
 
     @Override
     public User getUserById(Long userId) {
@@ -39,7 +41,9 @@ public class UserService implements IUserService {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
-            return userRepository.save(user);
+            User savedUser = userRepository.save(user);
+            cartService.initializeNewCart(savedUser);
+            return savedUser;
         }).orElseThrow(() -> new AlreadyExistsException(request.getEmail() + " already exists!"));
     }
 

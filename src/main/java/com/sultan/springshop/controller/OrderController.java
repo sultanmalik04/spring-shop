@@ -30,9 +30,10 @@ public class OrderController {
         try {
             Order order = orderService.placeOrder(userId);
             OrderDto orderDto = orderService.converToDto(order);
-            return ResponseEntity.ok(new ApiResponse("Item Order success", orderDto));
+            return ResponseEntity.ok(new ApiResponse("Item Order success", orderDto, true));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
@@ -40,19 +41,19 @@ public class OrderController {
     public ResponseEntity<ApiResponse> getOrderById(@PathVariable Long orderId) {
         try {
             OrderDto order = orderService.getOrder(orderId);
-            return ResponseEntity.ok(new ApiResponse("Success", order));
+            return ResponseEntity.ok(new ApiResponse("Success", order, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 
-    @GetMapping("/{orderId}/orders")
+    @GetMapping("/{userId}/orders")
     public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId) {
         try {
             List<OrderDto> orders = orderService.getUserOrders(userId);
-            return ResponseEntity.ok(new ApiResponse("Success", orders));
+            return ResponseEntity.ok(new ApiResponse("Success", orders, true));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 }
