@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sultan.springshop.dto.CartDto;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Cart;
 import com.sultan.springshop.response.ApiResponse;
@@ -28,7 +29,8 @@ public class CartController {
     public ResponseEntity<ApiResponse> getCart(@PathVariable Long cartId) {
         try {
             Cart cart = cartService.getCart(cartId);
-            return ResponseEntity.ok(new ApiResponse("Success", cart, true));
+            CartDto cartDto = cartService.convertCarttoCartDto(cart);
+            return ResponseEntity.ok(new ApiResponse("Success", cartDto, true));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null, false));
         }
@@ -48,12 +50,15 @@ public class CartController {
     public ResponseEntity<ApiResponse> getCartByUserId(@PathVariable Long userId) {
         try {
             Cart cart = cartService.getCartByUserId(userId);
+            CartDto cartDto = cartService.convertCarttoCartDto(cart);
             if (cart == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Cart not found for user", null, false));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("Cart not found for user", null, false));
             }
-            return ResponseEntity.ok(new ApiResponse("Success", cart, true));
+            return ResponseEntity.ok(new ApiResponse("Success", cartDto, true));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null, false));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), null, false));
         }
     }
 

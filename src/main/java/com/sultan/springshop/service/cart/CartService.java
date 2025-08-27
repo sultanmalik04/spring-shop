@@ -3,9 +3,12 @@ package com.sultan.springshop.service.cart;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sultan.springshop.dto.CartDto;
+import com.sultan.springshop.dto.UserDto;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Cart;
 import com.sultan.springshop.model.User;
@@ -21,6 +24,7 @@ public class CartService implements ICartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     // private final AtomicLong cartIdGenerator = new AtomicLong(0);
+    private final ModelMapper modelMapper;
 
     @Override
     public Cart getCart(Long id) {
@@ -57,6 +61,11 @@ public class CartService implements ICartService {
     @Override
     public Cart getCartByUserId(Long userId) {
         return cartRepository.findByUserId(userId);
+    }
+
+    @Override
+    public CartDto convertCarttoCartDto(Cart cart) {
+        return modelMapper.map(cart, CartDto.class);
     }
 
 }

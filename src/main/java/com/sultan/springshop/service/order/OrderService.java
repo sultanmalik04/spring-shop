@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import java.util.List;
 import java.util.HashSet;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class OrderService implements IOrderService {
         Order order = new Order();
         order.setUser(cart.getUser());
         order.setOrderStatus(OrderStatus.PENDING);
-        order.setOrderDate(LocalDate.now());
+        order.setOrderDate(LocalDateTime.now());
         return order;
     }
 
