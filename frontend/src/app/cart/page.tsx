@@ -73,8 +73,8 @@ const CartPage = () => {
                   )}
                 </div>
                 <div className="flex-grow">
-                  <h2 className="text-xl font-semibold mb-1">{item.name}</h2>
-                  <p className="text-gray-600 mb-1">${(item.price ?? 0).toFixed(2)}</p>
+                  <h2 className="text-gray-900 text-xl font-semibold mb-1">{item.name}</h2>
+                  <p className="text-gray-900 mb-1">${(item.price ?? 0).toFixed(2)}</p>
                   <div className="flex items-center space-x-2">
                     <label htmlFor={`quantity-${item.productId}`} className="sr-only">Quantity</label>
                     <input
@@ -83,7 +83,7 @@ const CartPage = () => {
                       min="1"
                       value={item.quantity}
                       onChange={(e) => updateItemQuantity(item.productId, Number(e.target.value))}
-                      className="w-20 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="text-gray-900 w-20 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                       onClick={() => removeItem(item.productId)}
@@ -93,20 +93,20 @@ const CartPage = () => {
                     </button>
                   </div>
                 </div>
-                <div className="text-lg font-bold">${((item.price ?? 0) * (item.quantity ?? 0)).toFixed(2)}</div>
+                <div className="text-gray-900 text-lg font-bold">${((item.price ?? 0) * (item.quantity ?? 0)).toFixed(2)}</div>
               </div>
             ))}
           </div>
 
           <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
-            <div className="flex justify-between text-lg mb-2">
+            <h2 className="text-gray-900 text-2xl font-bold mb-4">Order Summary</h2>
+            <div className="text-gray-900 flex justify-between text-lg mb-2">
               <span>Total Items:</span>
               <span>{cart.reduce((sum, item) => sum + item.quantity, 0)}</span>
             </div>
-            <div className="flex justify-between text-xl font-bold mb-6">
+            <div className="text-gray-900 flex justify-between text-xl font-bold mb-6">
               <span>Total Price:</span>
-              <span>${(totalPrice ?? 0).toFixed(2)}</span>
+              <span>${(cart.reduce((sum, item) => sum + item.quantity*item.price, 0) ?? 0).toFixed(2)}</span>
             </div>
             {orderError && <p className="text-red-500 text-sm mb-4">{orderError}</p>}
             {orderSuccess && <p className="text-green-500 text-sm mb-4">{orderSuccess}</p>}
