@@ -9,14 +9,16 @@ interface OrderItem {
   productName: string;
   quantity: number;
   price: number;
+  productBrand: string; // Add productBrand based on OCR
 }
 
 interface Order {
   id: string;
   orderDate: string;
-  totalPrice: number;
-  orderStatus: string;
-  orderItems: OrderItem[];
+  totalAmount: number; // Changed from totalPrice
+  status: string; // Changed from orderStatus
+  items: OrderItem[]; // Changed from orderItems
+  userId: string; // Add userId based on OCR
 }
 
 const OrdersPage = () => {
@@ -37,7 +39,7 @@ const OrdersPage = () => {
       try {
         const response = await orderApi.getUserOrders(userId);
         if (response.data.success) {
-          // console.log(response);
+          console.log(response.data.data);
           setOrders(response.data.data);
         } else {
           setError(response.data.message || 'Failed to fetch orders.');
@@ -72,16 +74,16 @@ const OrdersPage = () => {
             <div key={order.id} className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Order ID: {order.id}</h2>
-                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${order.orderStatus === 'PENDING' ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'}`}>
-                  {order.orderStatus}
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${order.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'}`}>
+                  {order.status}
                 </span>
               </div>
               <p className="text-gray-600 mb-2">Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-              <p className="text-gray-800 font-semibold mb-4">Total Price: ${(order.totalPrice ?? 0).toFixed(2)}</p>
+              <p className="text-gray-800 font-semibold mb-4">Total Price: ${(order.totalAmount ?? 0).toFixed(2)}</p>
 
               <h3 className="text-lg font-semibold mb-2">Items:</h3>
               <ul className="list-disc list-inside space-y-1">
-                {(order.orderItems ?? []).map((item) => (
+                {(order.items ?? []).map((item) => (
                   <li key={item.productId} className="text-gray-700">
                     {item.productName} (x{item.quantity}) - ${item.price.toFixed(2)} each
                   </li>
