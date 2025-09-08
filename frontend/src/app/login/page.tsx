@@ -15,10 +15,11 @@ const LoginPage = () => {
     setError('');
     try {
       const response = await authApi.login({ email, password });
-      // console.log(response);
+      console.log(response);
       if (response.data.success) {
         localStorage.setItem('jwtToken', response.data.data.token); // Store JWT token
         localStorage.setItem('userId', response.data.data.id); // Store user ID
+        localStorage.setItem('userRoles', JSON.stringify(response.data.data.roles)); // Store user roles
 
         router.push('/'); // Redirect to home or dashboard
       } else {

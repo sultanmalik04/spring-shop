@@ -2,6 +2,9 @@ package com.sultan.springshop.model;
 
 import java.math.BigDecimal;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -32,6 +35,7 @@ public class CartItem {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @OnDelete(action = OnDeleteAction.CASCADE) // When a Product is deleted, associated CartItems will be removed.
     private Product product;
 
     @JsonIgnore

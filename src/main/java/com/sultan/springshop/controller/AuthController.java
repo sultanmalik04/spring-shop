@@ -36,7 +36,8 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateTokenForUser(authentication);
             ShopUserDetails userDetails = (ShopUserDetails) authentication.getPrincipal();
-            JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
+            JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt, userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority()).toList());
             return ResponseEntity.ok(new ApiResponse("Login successful", jwtResponse, true));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

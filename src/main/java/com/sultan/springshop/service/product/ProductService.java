@@ -94,6 +94,9 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProductById(Long id) {
+        // First, delete all cart items that reference this product.
+        // Then, delete the product.
+
         productRepository.findById(id).ifPresentOrElse(productRepository::delete, () -> {
             throw new ResourceNotFoundException("Product not found!");
         });

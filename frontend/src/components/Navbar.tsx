@@ -4,26 +4,24 @@ import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext'; // Import useAuth
 
 const Navbar = () => {
   const { cart } = useCart();
   const [totalItems, setTotalItems] = useState(0);
   const router = useRouter();
-  const [userId, setUserId] = useState<string | null>(null); // Initialize userId with null
+  const { isAuthenticated, logout, isAdmin } = useAuth(); // Use useAuth hook
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     setTotalItems(cart.reduce((sum, item) => sum + item.quantity, 0));
-    // Read userId from localStorage only on the client side
     if (typeof window !== 'undefined') {
       setUserId(localStorage.getItem('userId'));
     }
   }, [cart]);
 
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('userId');
-    // Optionally clear cart context if it holds user-specific data
-    // clearCart(); 
+    logout(); // Use logout from AuthContext
     router.push('/login');
   };
 
@@ -40,8 +38,13 @@ const Navbar = () => {
           <Link href="/cart" className="relative hover:text-gray-300">
             Cart ({totalItems})
           </Link>
-          {userId ? (
+          {isAuthenticated ? (
             <>
+              {isAdmin && (
+                <Link href="/admin" className="hover:text-gray-300">
+                  Admin Dashboard
+                </Link>
+              )}
               <Link href="/orders" className="hover:text-gray-300">
                 My Orders
               </Link>

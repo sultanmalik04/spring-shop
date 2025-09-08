@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const API_BASE_URL = 'http://localhost:8080/api/v1'; // Replace with your Spring Boot backend URL
 
@@ -22,6 +23,20 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export const getRolesFromToken = (): string[] => {
+  const token = localStorage.getItem('jwtToken');
+  if (token) {
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.roles || [];
+    } catch (error) {
+      console.error('Error decoding JWT token:', error);
+      return [];
+    }
+  }
+  return [];
+};
 
 // Placeholder for API functions
 export const authApi = {
