@@ -11,4 +11,6 @@ public interface ICartItemService {
     void updateItemQuantity(Long cartId, Long productId, int quantity);
 
     public CartItem getCartItem(Long cartId, Long productId);
+
+    void deleteAllByProductId(Long productId);
 }

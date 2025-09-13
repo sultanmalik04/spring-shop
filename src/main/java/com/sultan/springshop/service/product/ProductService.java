@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sultan.springshop.dto.ImageDto;
 import com.sultan.springshop.dto.ProductDto;
@@ -14,11 +15,13 @@ import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Category;
 import com.sultan.springshop.model.Image;
 import com.sultan.springshop.model.Product;
+import com.sultan.springshop.repository.CartItemRepository;
 import com.sultan.springshop.repository.CategoryRepository;
 import com.sultan.springshop.repository.ImageRepository;
 import com.sultan.springshop.repository.ProductRepository;
 import com.sultan.springshop.request.AddProductRequest;
 import com.sultan.springshop.request.UpdateProductRequest;
+import com.sultan.springshop.service.cart.ICartItemService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +33,7 @@ public class ProductService implements IProductService {
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
     private final ModelMapper modelMapper;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -92,10 +96,12 @@ public class ProductService implements IProductService {
         return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
+    @Transactional
     @Override
     public void deleteProductById(Long id) {
         // First, delete all cart items that reference this product.
         // Then, delete the product.
+        cartItemRepository.deleteAllByProductId(id);
 
         productRepository.findById(id).ifPresentOrElse(productRepository::delete, () -> {
             throw new ResourceNotFoundException("Product not found!");

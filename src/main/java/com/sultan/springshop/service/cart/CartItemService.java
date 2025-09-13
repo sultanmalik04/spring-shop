@@ -80,4 +80,9 @@ public class CartItemService implements ICartItemService {
                 .findFirst().orElseThrow(() -> new ResourceNotFoundException("item not found"));
     }
 
+    @Override
+    public void deleteAllByProductId(Long productId) {
+        cartItemRepository.deleteAllByProductId(productId);
+    }
+
 }
