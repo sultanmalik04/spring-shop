@@ -76,6 +76,7 @@ const ProductDetailPage = () => {
               src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.images[0].downloadUrl}`}
               alt={product.name}
               fill
+              sizes="100vw" // Changed sizes prop to a more general value
               style={{ objectFit: 'contain' }}
               className="rounded-lg"
               priority

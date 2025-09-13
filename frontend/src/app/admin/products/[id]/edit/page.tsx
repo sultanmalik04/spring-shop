@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { use } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { productApi, imageApi, categoryApi } from '@/api';
@@ -10,15 +11,34 @@ interface Category {
   name: string;
 }
 
-const AddNewProductPage = () => {
+interface ProductImage {
+  id: string;
+  imageUrl: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  brand: string;
+  inventory: number;
+  category: Category; // Expecting a full Category object from backend
+  images: ProductImage[]; // Assuming product has an array of images
+}
+
+const EditProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = use(params);
   const { isAuthenticated, isAdmin, isLoading } = useAuth();
   const router = useRouter();
+
+  const [product, setProduct] = useState<Product | null>(null);
   const [name, setName] = useState<string>('');
   const [brand, setBrand] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [inventory, setInventory] = useState<number>(0);
   const [description, setDescription] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -38,23 +58,32 @@ const AddNewProductPage = () => {
       return;
     }
 
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await categoryApi.getAllCategories();
-        setCategories(response.data.data);
-        if (response.data.data.length > 0) {
-          setCategory(response.data.data[0].id); // Set default category
-        }
+        // Fetch product data
+        const productResponse = await productApi.getProductById(id);
+        const productData: Product = productResponse.data.data;
+        setProduct(productData);
+        setName(productData.name);
+        setBrand(productData.brand);
+        setPrice(productData.price);
+        setInventory(productData.inventory);
+        setDescription(productData.description);
+        setSelectedCategoryId(productData.category.id); // Set the selected category
+
+        // Fetch categories
+        const categoriesResponse = await categoryApi.getAllCategories();
+        setCategories(categoriesResponse.data.data);
       } catch (err) {
-        setError('Failed to fetch categories.');
+        setError('Failed to fetch product or categories.');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCategories();
-  }, [isAuthenticated, isAdmin, isLoading, router]);
+    fetchData();
+  }, [id, isAuthenticated, isAdmin, isLoading, router]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -69,26 +98,34 @@ const AddNewProductPage = () => {
     setSuccess(null);
 
     try {
+      const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
+
+      if (!selectedCategory) {
+        setError('Please select a valid category.');
+        setSubmitting(false);
+        return;
+      }
+
       const productData = {
+        id,
         name,
         description,
         price,
         brand,
         inventory,
-        category,
+        category: selectedCategory, // Send the full Category object
       };
 
-      const productResponse = await productApi.addProduct(productData);
-      const newProductId = productResponse.data.data.id;
+      await productApi.updateProduct(id, productData);
 
       if (selectedFiles && selectedFiles.length > 0) {
-        await imageApi.uploadImages(Array.from(selectedFiles), newProductId);
+        await imageApi.uploadImages(Array.from(selectedFiles), id);
       }
 
-      setSuccess('Product added successfully!');
-      router.push('/admin/products'); // Redirect to product list after success
+      setSuccess('Product updated successfully!');
+      router.push('/admin/products');
     } catch (err) {
-      setError('Failed to add product.');
+      setError('Failed to update product.');
       console.error(err);
     } finally {
       setSubmitting(false);
@@ -109,7 +146,7 @@ const AddNewProductPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
+      <h1 className="text-2xl font-bold mb-4">Edit Product: {product?.name}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-white">Product Name</label>
@@ -171,20 +208,35 @@ const AddNewProductPage = () => {
         </div>
         <div>
           <label htmlFor="category" className="block text-sm font-medium text-white">Category</label>
-          <input
+          <select
             id="category"
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-gray-300"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={selectedCategoryId}
+            onChange={(e) => setSelectedCategoryId(e.target.value)}
             required
-          />
+          >
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="images" className="block text-sm font-medium text-white">Product Images</label>
+          {/* Display existing images and allow deletion/new uploads */}
+          <div className="flex flex-wrap gap-2 mt-2">
+            {product?.images.map((image) => (
+              <div key={image.id} className="relative w-24 h-24 border rounded-md overflow-hidden">
+                <img src={image.imageUrl} alt="Product Image" className="w-full h-full object-cover" />
+                {/* Add delete button for images later */}
+              </div>
+            ))}
+          </div>
           <input
             type="file"
             id="images"
-            className="mt-1 block border text-white"
+            className="mt-1 block w-full text-white"
             multiple
             onChange={handleFileChange}
             accept="image/*"
@@ -197,11 +249,11 @@ const AddNewProductPage = () => {
           className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md"
           disabled={submitting}
         >
-          {submitting ? 'Adding Product...' : 'Add Product'}
+          {submitting ? 'Updating Product...' : 'Update Product'}
         </button>
       </form>
     </div>
   );
 };
 
-export default AddNewProductPage;
+export default EditProductPage;
