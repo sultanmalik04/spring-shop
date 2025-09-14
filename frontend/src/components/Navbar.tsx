@@ -10,14 +10,10 @@ const Navbar = () => {
   const { cart } = useCart();
   const [totalItems, setTotalItems] = useState(0);
   const router = useRouter();
-  const { isAuthenticated, logout, isAdmin } = useAuth(); // Use useAuth hook
-  const [userId, setUserId] = useState<string | null>(null);
+  const { isAuthenticated, logout, isAdmin, userId } = useAuth(); // Use userId from useAuth
 
   useEffect(() => {
     setTotalItems(cart.reduce((sum, item) => sum + item.quantity, 0));
-    if (typeof window !== 'undefined') {
-      setUserId(localStorage.getItem('userId'));
-    }
   }, [cart]);
 
   const handleLogout = () => {
@@ -35,9 +31,10 @@ const Navbar = () => {
           <Link href="/products" className="hover:text-gray-300">
             Products
           </Link>
-          <Link href="/cart" className="relative hover:text-gray-300">
+          {isAuthenticated ? (<>{!isAdmin && (<Link href="/cart" className="relative hover:text-gray-300">
             Cart ({totalItems})
-          </Link>
+          </Link>)}</>): null}
+          
           {isAuthenticated ? (
             <>
               {isAdmin && (
@@ -45,9 +42,11 @@ const Navbar = () => {
                   Admin Dashboard
                 </Link>
               )}
-              <Link href="/orders" className="hover:text-gray-300">
+              {!isAdmin && (
+                <Link href="/orders" className="hover:text-gray-300">
                 My Orders
               </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md transition-colors duration-300"

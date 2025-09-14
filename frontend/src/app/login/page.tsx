@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authApi } from '@/api';
+import { useAuth } from '@/context/AuthContext'; // Import useAuth
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login } = useAuth(); // Use useAuth hook
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +19,8 @@ const LoginPage = () => {
       const response = await authApi.login({ email, password });
       console.log(response);
       if (response.data.success) {
-        localStorage.setItem('jwtToken', response.data.data.token); // Store JWT token
-        localStorage.setItem('userId', response.data.data.id); // Store user ID
-        localStorage.setItem('userRoles', JSON.stringify(response.data.data.roles)); // Store user roles
+        // Call login function from AuthContext to update state and localStorage
+        login(response.data.data);
 
         router.push('/'); // Redirect to home or dashboard
       } else {
