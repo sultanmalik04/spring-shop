@@ -1,5 +1,7 @@
 package com.sultan.springshop.service.user;
 
+import java.util.List;
+
 import com.sultan.springshop.dto.UserDto;
 import com.sultan.springshop.model.User;
 import com.sultan.springshop.request.CreateUserRequest;
@@ -18,5 +20,7 @@ public interface IUserService {
     UserDto convertUsertoDto(User user);
 
     User getAuthenticatedUser();
+
+    List<User> getAllUsers();
 
 }

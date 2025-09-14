@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAuthenticated(true);
       setRoles(getRolesFromToken());
       setIsLoading(false);
-      
     }
   }, []);
 
@@ -33,6 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('jwtToken', token);
     setIsAuthenticated(true);
     setRoles(getRolesFromToken());
+    setIsLoading(false);
   };
 
   const logout = () => {

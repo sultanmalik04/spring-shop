@@ -1,5 +1,7 @@
 package com.sultan.springshop.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +23,7 @@ import com.sultan.springshop.response.ApiResponse;
 import com.sultan.springshop.service.user.IUserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +31,19 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final IUserService userService;
+
+    @GetMapping("all")
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+            List<UserDto> convertedUser = users.stream().map(user -> userService.convertUsertoDto(user)).toList();
+            return ResponseEntity.ok(new ApiResponse("success", convertedUser, true));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error: ", HttpStatus.INTERNAL_SERVER_ERROR, false));
+        }
+
+    }
 
     @GetMapping("{userId}/user")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {

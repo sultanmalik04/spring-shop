@@ -49,6 +49,7 @@ export const userApi = {
   createUser: (userData: any) => api.post('/users/add', userData),
   updateUser: (userId: string, userData: any) => api.put(`/users/${userId}/update`, userData),
   deleteUser: (userId: string) => api.delete(`/users/${userId}/delete`),
+  getAllUsers: () => api.get('/users/all'), // Added getAllUsers API call
 };
 
 export const categoryApi = {
