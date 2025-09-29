@@ -45,4 +45,19 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/validate-token")
+    public ResponseEntity<ApiResponse> validateJwtToken(@RequestBody String token) {
+        try {
+            boolean isValid = jwtUtils.validateToken(token);
+            if (isValid) {
+                return ResponseEntity.ok(new ApiResponse("Token is valid", null, true));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ApiResponse("Invalid token", null, false));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null, false));
+        }
+    }
+
 }

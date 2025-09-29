@@ -1,18 +1,55 @@
+'use client';
+
 import HeroSection from "@/components/HeroSection";
-import Image from "next/image";
+import CategoryProductList from "@/components/CategoryProductList";
+import { categoryApi } from "@/api";
+import { useEffect, useState } from "react";
+
+interface Category {
+  id: string;
+  name: string;
+  imageUrl: string;
+}
 
 export default function Home() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await categoryApi.getAllCategories();
+        console.log(response.data);
+        setCategories(response.data.data);
+      } catch (err) {
+        setError("Failed to fetch categories");
+        console.error("Failed to fetch categories:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return <div className="text-center py-8">Loading categories...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
+
   return (
     <main className="">
-      {/* <div className="z-10 w-full max-w-5xl items-center justify-center font-mono text-sm lg:flex">
-        <h1 className="text-4xl font-bold">Welcome to SpringShop!</h1>
-      </div>
-      <div className="relative z-10 w-full max-w-5xl items-center justify-center font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Explore our wide range of products.
-        </p>
-      </div> */}
       <HeroSection/>
+      <div className="container mx-auto px-4 py-8">
+        {categories.map(category => (
+          <CategoryProductList key={category.id} categoryName={category.name} />
+        ))}
+      </div>
     </main>
   );
 }
