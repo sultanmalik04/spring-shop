@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sultan.springshop.dto.CartDto;
-import com.sultan.springshop.dto.UserDto;
 import com.sultan.springshop.exceptions.ResourceNotFoundException;
 import com.sultan.springshop.model.Cart;
 import com.sultan.springshop.model.User;

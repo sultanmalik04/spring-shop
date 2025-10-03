@@ -23,7 +23,6 @@ import com.sultan.springshop.response.ApiResponse;
 import com.sultan.springshop.service.user.IUserService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor

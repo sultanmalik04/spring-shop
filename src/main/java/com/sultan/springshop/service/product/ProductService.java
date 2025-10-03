@@ -21,7 +21,6 @@ import com.sultan.springshop.repository.ImageRepository;
 import com.sultan.springshop.repository.ProductRepository;
 import com.sultan.springshop.request.AddProductRequest;
 import com.sultan.springshop.request.UpdateProductRequest;
-import com.sultan.springshop.service.cart.ICartItemService;
 
 import lombok.RequiredArgsConstructor;
 
