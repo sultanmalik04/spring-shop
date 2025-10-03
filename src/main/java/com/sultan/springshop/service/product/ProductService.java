@@ -156,4 +156,9 @@ public class ProductService implements IProductService {
         return productDto;
     }
 
+    @Override
+    public List<Product> searchProducts(String keyword) {
+        return productRepository.findByNameContainingIgnoreCase(keyword);
+    }
+
 }

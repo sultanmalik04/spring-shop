@@ -24,7 +24,14 @@ interface Product {
 
 const CategoryProductsPage: React.FC = () => {
   const params = useParams();
-  const categoryName = params.categoryName; // Corrected extraction
+  const rawCategoryName = params.categoryName;
+  const categoryName =
+    rawCategoryName
+      ? Array.isArray(rawCategoryName)
+        ? decodeURIComponent(rawCategoryName[0])
+        : decodeURIComponent(rawCategoryName)
+      : '';
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

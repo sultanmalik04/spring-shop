@@ -184,4 +184,21 @@ public class ProductController {
         }
     }
 
+    // Endpoint to search products by name
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse> searchProductsByName(@RequestParam String keyword) {
+        try {
+            List<Product> products = productService.searchProducts(keyword);
+            List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
+            if (products.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse("No products found", null, false));
+            }
+            return ResponseEntity.ok(new ApiResponse("Success", convertedProducts, true));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), null, false));
+        }
+    }
+
 }

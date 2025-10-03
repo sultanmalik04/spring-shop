@@ -33,4 +33,6 @@ public interface IProductService {
     ProductDto convertToDto(Product product);
 
     List<ProductDto> getConvertedProducts(List<Product> products);
+
+    List<Product> searchProducts(String keyword);
 }

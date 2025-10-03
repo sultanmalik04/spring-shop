@@ -11,6 +11,7 @@ const Navbar = () => {
   const [totalItems, setTotalItems] = useState(0);
   const router = useRouter();
   const { isAuthenticated, logout, isAdmin, userId } = useAuth(); // Use userId from useAuth
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     setTotalItems(cart.reduce((sum, item) => sum + item.quantity, 0));
@@ -21,6 +22,13 @@ const Navbar = () => {
     router.push('/login');
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/search?query=${searchTerm}`);
+    }
+  };
+
   return (
     <nav className="bg-gray-800 p-4 text-white">
       <div className="container mx-auto flex justify-between items-center">
@@ -28,6 +36,18 @@ const Navbar = () => {
           SpringShop
         </Link>
         <div className="flex items-center space-x-4">
+          <form onSubmit={handleSearch} className="flex items-center">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search products..."
+              className="p-2 rounded-md text-white"
+            />
+            <button type="submit" className="ml-2 p-2 bg-blue-600 rounded-md hover:bg-blue-700">
+              Search
+            </button>
+          </form>
           <Link href="/products" className="hover:text-gray-300">
             Products
           </Link>

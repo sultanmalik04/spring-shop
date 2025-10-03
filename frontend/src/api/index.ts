@@ -73,6 +73,7 @@ export const productApi = {
   getProductsByBrand: (brand: string) => api.get(`/products/product/by-brand?brand=${brand}`),
   getProductsByCategory: (category: string) => api.get(`/products/product/${category}/all/product`),
   countProductsByBrandAndName: (brand: string, name: string) => api.get(`/products/product/count/by-brand/and-name?brand=${brand}&name=${name}`),
+  searchProductByName: (keyword: string) => api.get(`/products/search?keyword=${keyword}`),
 };
 
 export const cartApi = {
