@@ -18,8 +18,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className="rounded-t-lg"
         />
       </div>
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">{product.name}</h3>
+      <div className="p-4 flex flex-col flex-grow bg-white">
+        <h3 className="text-lg font-semibold text-black mb-1 line-clamp-2">{product.name}</h3>
         <p className="text-sm text-gray-600 mb-2">Brand: {product.brand}</p>
         <div className="flex items-center justify-between mt-auto">
           <p className="text-xl font-bold text-blue-600">${product.price.toFixed(2)}</p>
@@ -28,6 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </button>
         </div>
       </div>
+      
     </Link>
   );
 };

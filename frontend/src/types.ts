@@ -58,3 +58,4 @@ export interface Category {
   imageUrl: string;
   products: Product[];
 }
+

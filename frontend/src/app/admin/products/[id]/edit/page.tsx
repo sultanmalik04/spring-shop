@@ -12,8 +12,9 @@ interface Category {
 }
 
 interface ProductImage {
-  id: string;
-  imageUrl: string;
+  id: number;
+  fileName: string;
+  downloadUrl: string;
 }
 
 interface Product {
@@ -228,7 +229,7 @@ const EditProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
           <div className="flex flex-wrap gap-2 mt-2">
             {product?.images.map((image) => (
               <div key={image.id} className="relative w-24 h-24 border rounded-md overflow-hidden">
-                <img src={image.imageUrl} alt="Product Image" className="w-full h-full object-cover" />
+                <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.images[0].downloadUrl}`} alt="Product Image" className="w-full h-full object-cover" />
                 {/* Add delete button for images later */}
               </div>
             ))}

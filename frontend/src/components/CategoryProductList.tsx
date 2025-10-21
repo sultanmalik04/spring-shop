@@ -60,7 +60,7 @@ const CategoryProductList: React.FC<CategoryProductListProps> = ({ categoryName 
   return (
     <section className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 capitalize">{categoryName}</h2>
+        <h2 className="text-3xl font-bold text-white capitalize">{categoryName}</h2>
         <Link href={`/products/category/${encodeURIComponent(categoryName)}`} className="text-blue-600 hover:text-blue-800 font-semibold">
           View All Products &rarr;
         </Link>
