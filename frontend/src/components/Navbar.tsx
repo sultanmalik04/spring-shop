@@ -12,10 +12,21 @@ const Navbar = () => {
   const router = useRouter();
   const { isAuthenticated, logout, isAdmin, userId } = useAuth(); // Use userId from useAuth
   const [searchTerm, setSearchTerm] = useState('');
+  // Prevent hydration mismatch by only rendering auth/cart dependent UI
+  // after the component has mounted on the client. Server-rendered HTML
+  // can differ from client state (e.g. localStorage-based auth), which
+  // leads to hydration warnings. Also note browser extensions can inject
+  // attributes (like `fdprocessedid`) that cause mismatches — test with
+  // extensions disabled if you still see warnings.
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setTotalItems(cart.reduce((sum, item) => sum + item.quantity, 0));
   }, [cart]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     logout(); // Use logout from AuthContext
@@ -51,39 +62,42 @@ const Navbar = () => {
           <Link href="/products" className="hover:text-gray-300">
             Products
           </Link>
-          {isAuthenticated ? (<>{!isAdmin && (<Link href="/cart" className="relative hover:text-gray-300">
-            Cart ({totalItems})
-          </Link>)}</>): null}
-          
-          {isAuthenticated ? (
-            <>
-              {isAdmin && (
-                <Link href="/admin" className="hover:text-gray-300">
-                  Admin Dashboard
+          {/* Only render auth-related UI after client mount to avoid hydration mismatches */}
+          {mounted ? (
+            isAuthenticated ? (
+              <>
+                {!isAdmin && (
+                  <Link href="/cart" className="relative hover:text-gray-300">
+                    Cart ({totalItems})
+                  </Link>
+                )}
+                {isAdmin ? (
+                  <Link href="/admin" className="hover:text-gray-300">
+                    Admin Dashboard
+                  </Link>
+                ) : (
+                  <Link href="/orders" className="hover:text-gray-300">
+                    My Orders
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md transition-colors duration-300"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="hover:text-gray-300">
+                  Login
                 </Link>
-              )}
-              {!isAdmin && (
-                <Link href="/orders" className="hover:text-gray-300">
-                My Orders
-              </Link>
-              )}
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md transition-colors duration-300"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="hover:text-gray-300">
-                Login
-              </Link>
-              <Link href="/register" className="hover:text-gray-300">
-                Register
-              </Link>
-            </>
-          )}
+                <Link href="/register" className="hover:text-gray-300">
+                  Register
+                </Link>
+              </>
+            )
+          ) : null}
         </div>
       </div>
     </nav>

@@ -36,6 +36,8 @@ public class Order {
     private BigDecimal totalAmount;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    private String paymentStatus; // e.g., PENDING, PAID, FAILED
+    private String paymentId; // Store Stripe Checkout Session ID or Payment Intent ID
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();

@@ -16,8 +16,16 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     try {
+      console.log('Login payload', { email, password });
+      
+      // Clear any existing tokens before login (Chrome compatibility)
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userRoles');
+      localStorage.removeItem('cartId');
+      
       const response = await authApi.login({ email, password });
-      console.log(response);
+      console.log('Login response', response);
       if (response.data.success) {
         // Call login function from AuthContext to update state and localStorage
         login(response.data.data);
@@ -27,7 +35,14 @@ const LoginPage = () => {
         setError(response.data.message || 'Login failed');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred during login.');
+      console.error('Login error:', err);
+      if (err.code === 'NETWORK_ERROR' || err.message?.includes('Network Error')) {
+        setError('Network error. Please check your connection and try again.');
+      } else if (err.response?.status === 401) {
+        setError('Invalid email or password. Please try again.');
+      } else {
+        setError(err.response?.data?.message || 'An error occurred during login.');
+      }
     }
   };
 

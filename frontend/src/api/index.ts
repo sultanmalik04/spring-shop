@@ -7,7 +7,12 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
+  // Send cookies (if backend sets http-only cookies for auth). This helps
+  // Chrome and other browsers behave consistently when backend relies on cookies.
+  withCredentials: true,
+  timeout: 10000, // Add timeout for Chrome compatibility
 });
 
 // Request interceptor to add JWT token to headers
@@ -119,6 +124,10 @@ export const imageApi = {
         });
     },
     deleteImage: (imageId: string) => api.delete(`/images/image/${imageId}/delete`),
+};
+
+export const paymentApi = {
+    createCheckoutSession: (orderId: string) => api.post(`/payment/create-checkout-session/${orderId}`),
 };
 
 export default api;

@@ -70,22 +70,31 @@ const OrdersPage = () => {
         <p className="text-center text-gray-600">You have no orders yet. <Link href="/products" className="text-blue-500 hover:underline">Start shopping!</Link></p>
       ) : (
         <div className="space-y-6">
-          {(orders ?? []).map((order) => (
-            <div key={order.id} className="bg-white p-6 rounded-lg shadow-md">
+          {(orders ?? []).map((order, orderIndex) => (
+            <div key={order.id || `order-${orderIndex}`} className="bg-white p-6 rounded-lg shadow-md">
               <div className="text-gray-600 flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Order ID: {order.id}</h2>
-                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${order.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'}`}>
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                  order.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'
+                }`}>
                   {order.status}
                 </span>
               </div>
-              <p className="text-gray-600 mb-2">Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-              <p className="text-gray-800 font-semibold mb-4">Total Price: ${(order.totalAmount ?? 0).toFixed(2)}</p>
+              <p className="text-gray-600 mb-2">
+                Order Date: {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'}
+              </p>
+              <p className="text-gray-800 font-semibold mb-4">
+                Total Price: ${(order.totalAmount ?? 0).toFixed(2)}
+              </p>
 
               <h3 className="text-gray-600 text-lg font-semibold mb-2">Items:</h3>
               <ul className="list-disc list-inside space-y-1">
-                {(order.items ?? []).map((item) => (
-                  <li key={item.productId} className="text-gray-700">
-                    {item.productName} (x{item.quantity}) - ${item.price.toFixed(2)} each
+                {(order.items ?? []).map((item, itemIndex) => (
+                  <li 
+                    key={`${order.id || orderIndex}-item-${item.productId || itemIndex}`} 
+                    className="text-gray-700"
+                  >
+                    {item.productName} (x{item.quantity}) - ${(item.price || 0).toFixed(2)} each
                   </li>
                 ))}
               </ul>

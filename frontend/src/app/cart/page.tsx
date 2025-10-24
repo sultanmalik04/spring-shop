@@ -16,6 +16,7 @@ const CartPage = () => {
   const handleCheckout = async () => {
     setOrderError(null);
     setOrderSuccess(null);
+    console.log('Initiating checkout process...');
     const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage after login
     if (!userId) {
       setOrderError('Please log in to place an order.');
@@ -28,10 +29,13 @@ const CartPage = () => {
 
     try {
       const response = await orderApi.createOrder(userId);
-      if (response.data.success) {
-        setOrderSuccess('Order placed successfully!');
-        clearCart(); // Clear cart after successful order
-        router.push('/orders'); // Redirect to order history
+      console.log('Order creation response:', response);
+      if (response.data.data.orderId) {
+        setOrderSuccess('Order placed successfully! Redirecting to payment...');
+        clearCart(); // Clear cart after successful order creation
+        // Redirect to payment page with order ID
+        console.log('Redirecting to payment with orderId:', response.data.orderId);
+        router.push(`/payment?orderId=${response.data.data.orderId}`);
       } else {
         setOrderError(response.data.message || 'Failed to place order.');
       }

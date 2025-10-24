@@ -50,6 +50,7 @@ public class OrderService implements IOrderService {
         order.setUser(cart.getUser());
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
+        order.setPaymentStatus("PENDING"); // Initial payment status
         return order;
     }
 
@@ -82,5 +83,17 @@ public class OrderService implements IOrderService {
     @Override
     public OrderDto converToDto(Order order) {
         return modelMapper.map(order, OrderDto.class);
+    }
+
+    public void updateOrderStatus(Long orderId, String newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
+        order.setPaymentStatus(newStatus);
+        orderRepository.save(order);
+    }
+
+    public Order getOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
     }
 }
